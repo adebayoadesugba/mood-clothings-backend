@@ -8,15 +8,18 @@ const {
   deleteProduct,
 } = require('../controllers/productController');
 
+// 1. Import your new security middleware guards:
+const { protect, admin } = require('../middleware/authMiddleware');
+
 // Route handling for /api/products
 router.route('/')
-  .get(getProducts)
-  .post(createProduct); // Note: We will add admin auth middleware protection here next
+  .get(getProducts)                  // Anyone can view inventory listings
+  .post(protect, admin, createProduct); // ONLY logged-in Admins can add clothes
 
 // Route handling for /api/products/:id
 router.route('/:id')
-  .get(getProductById)
-  .put(updateProduct)    // Note: Admin protection target
-  .delete(deleteProduct); // Note: Admin protection target
+  .get(getProductById)               // Anyone can view a single item's details
+  .put(protect, admin, updateProduct)    // ONLY logged-in Admins can edit details
+  .delete(protect, admin, deleteProduct); // ONLY logged-in Admins can remove items
 
 module.exports = router;

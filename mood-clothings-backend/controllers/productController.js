@@ -27,17 +27,15 @@ const getProductById = async (req, res, next) => {
 
 // @desc    Create a new product (Admin feature)
 // @route   POST /api/products
+// @desc    Create a new product (Admin feature)
+// @route   POST /api/products
 const createProduct = async (req, res, next) => {
   try {
-    // Generates a URL-friendly slug ID from name if not provided
-    const customId = req.body.id || req.body.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-    
-    const productData = { ...req.body, _id: customId };
-    const product = await Product.create(productData);
-    
-    res.status(201).json({ success: true, data: product });
+    const product = await Product.create(req.body);
+    // Explicit return prevents any background code execution leakage
+    return res.status(201).json({ success: true, data: product });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
 
@@ -45,10 +43,7 @@ const createProduct = async (req, res, next) => {
 // @route   PUT /api/products/:id
 const updateProduct = async (req, res, next) => {
   try {
-    const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const product = await Product.findByIdAndUpdate(req.params.id, req.body, { returnDocument: 'after', runValidators: true });
 
     if (!product) {
       return res.status(404).json({ success: false, message: 'Product not found' });

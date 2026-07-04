@@ -6,7 +6,7 @@ const connectDB = require('./config/db');
 const productRoutes = require('./routes/productRoutes');
 
 const authRoutes = require('./routes/authRoutes');
-
+const orderRoutes = require('./routes/orderRoutes');
 
 
 
@@ -33,6 +33,9 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ success: false, message: 'Internal Server Error' });
 });
+
+
+app.use('/api/orders', orderRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
