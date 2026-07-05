@@ -10,7 +10,7 @@ const getProducts = async (req, res, next) => {
     next(error);
   }
 };
-
+// @desc    Get a single product by ID
 // @desc    Get a single product by ID
 // @route   GET /api/products/:id
 const getProductById = async (req, res, next) => {
