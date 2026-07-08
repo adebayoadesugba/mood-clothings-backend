@@ -37,4 +37,37 @@ const getMyOrders = async (req, res, next) => {
   }
 };
 
-module.exports = { createOrder, getMyOrders };
+// @desc    Get ALL customer checkout orders
+// @route   GET /api/orders
+// @access  Private (Admin only)
+const getAllOrders = async (req, res, next) => {
+  try {
+    const orders = await Order.find({}).sort({ createdAt: -1 });
+    return res.status(200).json({ success: true, count: orders.length, data: orders });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+// @desc    Update an order's fulfillment parameters or tracking index
+// @route   PUT /api/orders/:id
+// @access  Private (Admin only)
+const updateOrder = async (req, res, next) => {
+  try {
+    const order = await Order.findByIdAndUpdate(
+      req.params.id,
+      { $set: req.body },
+      { new: true, runValidators: true }
+    );
+
+    if (!order) {
+      return res.status(404).json({ success: false, message: 'Target order record not found.' });
+    }
+
+    return res.status(200).json({ success: true, data: order });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+module.exports = { createOrder, getMyOrders, getAllOrders, updateOrder };
