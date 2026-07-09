@@ -11,10 +11,14 @@ const app = express();
 connectDB();
 
 app.use(cors({
-  origin: 'https://moodclothings.com/', // Allow requests only from the specified frontend domain
+  origin: [
+    'http://localhost:8080',
+    'https://moodclothings.com',
+    'https://www.moodclothings.com'
+  ],
   credentials: true
 }));
-app.use(express.json());
+app.use(express.json()); 
 
 app.use('/api/products', productRoutes);
 app.use('/api/auth', authRoutes);
