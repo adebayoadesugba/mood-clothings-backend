@@ -57,7 +57,7 @@ const updateOrder = async (req, res, next) => {
     const order = await Order.findByIdAndUpdate(
       req.params.id,
       { $set: req.body },
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     );
 
     if (!order) {

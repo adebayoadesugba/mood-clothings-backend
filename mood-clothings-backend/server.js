@@ -11,7 +11,7 @@ const app = express();
 connectDB();
 
 app.use(cors({
-  origin: 'http://localhost:8080',
+  origin: 'https://moodclothings.com/', // Allow requests only from the specified frontend domain
   credentials: true
 }));
 app.use(express.json());
