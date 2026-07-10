@@ -3,12 +3,13 @@
 // 2. Verify a sending domain OR use their default onboarding@resend.dev sender for testing
 // 3. Copy your API key into your backend's environment variables as RESEND_API_KEY
 
-const sendEmail = async ({ to, subject, html }) => {
+const sendEmail = async ({ to, subject, html, replyTo }) => {
   const RESEND_API_KEY = process.env.RESEND_API_KEY;
   const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'Mood Clothings <welcome@contact.moodclothings.com>';
+  const REPLY_TO_EMAIL = replyTo || process.env.RESEND_REPLY_TO || 'info@moodclothings.com';
 
   if (!RESEND_API_KEY) {
-    console.error('RESEND_API_KEY is not set email was not sent.');
+    console.error('RESEND_API_KEY is not set — email was not sent.');
     return { success: false, error: 'Email service not configured' };
   }
 
@@ -22,6 +23,7 @@ const sendEmail = async ({ to, subject, html }) => {
       body: JSON.stringify({
         from: FROM_EMAIL,
         to: [to],
+        reply_to: REPLY_TO_EMAIL,
         subject,
         html,
       }),

@@ -16,6 +16,11 @@ const generateToken = (id) => {
 // ─────────────────────────────────────────────
 const buildWelcomeEmailHtml = (name) => `
   <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px; color: #111;">
+    <img
+      src="https://res.cloudinary.com/gam6ajgd/image/upload/v1783698611/MOOD_CLOTH_j8ppzw.png"
+      alt="Mood Clothings"
+      style="height: 36px; width: auto; display: block; margin-bottom: 28px;"
+    />
     <h1 style="font-size: 22px; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 8px;">
       Welcome, ${name}!
     </h1>
@@ -173,11 +178,16 @@ const forgotPassword = async (req, res, next) => {
     user.resetPasswordExpire = Date.now() + 30 * 60 * 1000; // 30 minutes
     await user.save();
 
-    const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:8080'; // Default to localhost if FRONTEND_URL is not set
+    const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:8080';
     const resetUrl = `${FRONTEND_URL}/reset-password/${rawToken}`;
 
     const html = `
       <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px; color: #111;">
+        <img
+          src="https://res.cloudinary.com/gam6ajgd/image/upload/v1783698611/MOOD_CLOTH_j8ppzw.png"
+          alt="Mood Clothings"
+          style="height: 36px; width: auto; display: block; margin-bottom: 28px;"
+        />
         <h1 style="font-size: 20px; letter-spacing: 0.05em; text-transform: uppercase;">Reset your password</h1>
         <p style="font-size: 15px; line-height: 1.6; color: #444;">
           We received a request to reset the password for your Mood Clothings account.
