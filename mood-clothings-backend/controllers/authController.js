@@ -178,7 +178,7 @@ const forgotPassword = async (req, res, next) => {
     user.resetPasswordExpire = Date.now() + 30 * 60 * 1000; // 30 minutes
     await user.save();
 
-    const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:8080';
+    const FRONTEND_URL = process.env.FRONTEND_URL || 'https://moodclothings.com'; // Default to production if not set
     const resetUrl = `${FRONTEND_URL}/reset-password/${rawToken}`;
 
     const html = `
