@@ -46,9 +46,12 @@ const buildOrderConfirmationHtml = (customerName, items, total) => {
         ${itemsListHtml}
       </table>
 
-      <div style="display: flex; justify-content: space-between; margin-top: 16px; font-size: 15px; font-weight: bold; color: #111;">
-        <span>Total Amount Paid </span> <span> ₦${total.toLocaleString()}</span>
-      </div>
+      <table style="width: 100%; border-collapse: collapse; margin-top: 16px;">
+        <tr>
+          <td style="font-size: 15px; font-weight: bold; color: #111; padding: 0;">Total Amount Paid</td>
+          <td style="font-size: 15px; font-weight: bold; color: #111; text-align: right; padding: 0;">₦${total.toLocaleString()}</td>
+        </tr>
+      </table>
 
       <p style="font-size: 15px; line-height: 1.6; color: #444; margin-top: 24px;">
         You can expect your order to arrive within <strong>2–3 working days</strong>.
