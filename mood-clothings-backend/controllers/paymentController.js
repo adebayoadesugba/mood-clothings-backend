@@ -47,13 +47,13 @@ const buildOrderConfirmationHtml = (customerName, items, total) => {
       </table>
 
       <div style="display: flex; justify-content: space-between; margin-top: 16px; font-size: 15px; font-weight: bold; color: #111;">
-        <span>Total Paid </span><span> ₦${total.toLocaleString()}</span>
+        <span>Total Paid </span> <span> ₦${total.toLocaleString()}</span>
       </div>
 
       <p style="font-size: 15px; line-height: 1.6; color: #444; margin-top: 24px;">
         You can expect your order to arrive within <strong>2–3 working days</strong>.
         Please note a delivery fee of <strong>₦1,000 – ₦5,000</strong> (based on your location) is payable directly
-        to the courier upon delivery.
+        to the courier upon delivery. Thank you for shopping with Mood Clothings!
       </p>
 
       <p style="font-size: 13px; color: #888; margin-top: 32px;">— The Mood Clothings Team</p>
