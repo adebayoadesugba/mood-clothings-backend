@@ -94,7 +94,10 @@ const createOrder = async (req, res, next) => {
 // @access  Private
 const getMyOrders = async (req, res, next) => {
   try {
-    const orders = await Order.find({ 'customer.email': req.user.email });
+    // Only show orders that were actually paid for — a pending/cancelled/failed payment
+    // attempt creates an Order record too (so we don't lose track of it), but it isn't
+    // a real order the customer should see in their history until payment is confirmed.
+    const orders = await Order.find({ 'customer.email': req.user.email, paymentStatus: 'paid' }).sort({ createdAt: -1 });
     return res.status(200).json({ success: true, count: orders.length, data: orders });
   } catch (error) {
     return next(error);
@@ -106,7 +109,9 @@ const getMyOrders = async (req, res, next) => {
 // @access  Private (Admin only)
 const getAllOrders = async (req, res, next) => {
   try {
-    const orders = await Order.find({}).sort({ createdAt: -1 });
+    // Same rule for the admin panel: only genuinely paid orders should appear here.
+    // Abandoned checkouts and cancelled/failed payments are filtered out.
+    const orders = await Order.find({ paymentStatus: 'paid' }).sort({ createdAt: -1 });
     return res.status(200).json({ success: true, count: orders.length, data: orders });
   } catch (error) {
     return next(error);
