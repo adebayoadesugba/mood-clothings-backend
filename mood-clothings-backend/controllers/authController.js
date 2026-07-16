@@ -25,7 +25,7 @@ const buildWelcomeEmailHtml = (name) => `
       Welcome, ${name}!
     </h1>
     <p style="font-size: 15px; line-height: 1.6; color: #444;">
-      Thank you for joining Mood Clothings. We're thrilled to have you with us —
+      Thank you for joining Mood Clothings. We're thrilled to have you with us! Now you can
       explore our latest collections, save your favorite pieces to your wishlist,
       and enjoy a seamless shopping experience made just for you.
     </p>

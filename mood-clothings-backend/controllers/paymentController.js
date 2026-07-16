@@ -47,7 +47,7 @@ const buildOrderConfirmationHtml = (customerName, items, total) => {
       </table>
 
       <div style="display: flex; justify-content: space-between; margin-top: 16px; font-size: 15px; font-weight: bold; color: #111;">
-        <span>Total Paid </span> <span> ₦${total.toLocaleString()}</span>
+        <span>Total Amount Paid </span> <span> ₦${total.toLocaleString()}</span>
       </div>
 
       <p style="font-size: 15px; line-height: 1.6; color: #444; margin-top: 24px;">
