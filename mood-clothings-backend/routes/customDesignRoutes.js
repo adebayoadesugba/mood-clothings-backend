@@ -9,7 +9,7 @@ const { protect } = require('../middleware/authMiddleware');
 router.route('/')
   .post(protect, async (req, res, next) => {
     try {
-      const { customerName, userEmail, files, notes } = req.body;
+      const { customerName, userEmail, userPhone, files, notes } = req.body;
 
       // Direct sanity verification checks
       if (!notes || notes.trim() === '') {
@@ -20,10 +20,15 @@ router.route('/')
         return res.status(400).json({ success: false, message: 'Customer profile details (name and email) are required.' });
       }
 
+      if (!userPhone || userPhone.trim() === '') {
+        return res.status(400).json({ success: false, message: 'A valid phone number is required for contact purposes.' });
+      }
+
       // Build the document directly into your collection matching your exact custom schema fields
       const designBrief = await CustomDesign.create({
         customerName,
         userEmail,
+        userPhone,
         files: Array.isArray(files) ? files : [],
         notes
       });

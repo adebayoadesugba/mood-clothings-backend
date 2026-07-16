@@ -5,25 +5,39 @@ const connectDB = require('./config/db');
 const productRoutes = require('./routes/productRoutes');
 const authRoutes = require('./routes/authRoutes');
 const orderRoutes = require('./routes/orderRoutes');
-const customDesignRoutes = require('./routes/customDesignRoutes'); // Clean import of the new atelier route file
+const paymentRoutes = require('./routes/paymentRoutes');
+const { handleWebhook } = require('./controllers/paymentController');
 
 const app = express();
+
 connectDB();
 
 app.use(cors({
-  origin: [
-    'http://localhost:8080',
-    'https://moodclothings.com',
-    'https://www.moodclothings.com'
-  ],
+  origin: ['http://localhost:8080', 'https://moodclothings.com', 'https://www.moodclothings.com'],
   credentials: true
 }));
-app.use(express.json()); 
+
+// PAYSTACK WEBHOOK: must be registered BEFORE express.json(), and must use express.raw()
+// instead of express.json() for this one route specifically. Paystack signs the exact raw
+// bytes of the request body — if Express re-serializes the JSON before we verify the
+// signature, the bytes won't match and every real webhook would fail verification.
+app.post(
+  '/api/payments/webhook',
+  express.raw({ type: 'application/json' }),
+  (req, res, next) => {
+    req.rawBody = req.body; // express.raw() gives us a Buffer here, which is exactly what we need
+    next();
+  },
+  handleWebhook
+);
+
+// Every other route can safely use normal JSON parsing
+app.use(express.json());
 
 app.use('/api/products', productRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/orders', orderRoutes);
-app.use('/api/custom-designs', customDesignRoutes); // Mounted cleanly without interfering with adjacent pipelines
+app.use('/api/payments', paymentRoutes);
 
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'healthy', timestamp: new Date() });
