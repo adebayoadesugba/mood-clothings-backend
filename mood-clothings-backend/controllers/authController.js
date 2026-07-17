@@ -25,7 +25,7 @@ const buildWelcomeEmailHtml = (name) => `
       Welcome, ${name}!
     </h1>
     <p style="font-size: 15px; line-height: 1.6; color: #444;">
-      Thank you for joining Mood Clothings. We're thrilled to have you with us! Now you can
+      Thank you for joining Mood Clothings. We're thrilled to have you with us —
       explore our latest collections, save your favorite pieces to your wishlist,
       and enjoy a seamless shopping experience made just for you.
     </p>
@@ -178,7 +178,7 @@ const forgotPassword = async (req, res, next) => {
     user.resetPasswordExpire = Date.now() + 30 * 60 * 1000; // 30 minutes
     await user.save();
 
-    const FRONTEND_URL = process.env.FRONTEND_URL || 'https://moodclothings.com'; // Default to production if not set
+    const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:8080';
     const resetUrl = `${FRONTEND_URL}/reset-password/${rawToken}`;
 
     const html = `
@@ -259,4 +259,17 @@ const resetPassword = async (req, res, next) => {
   }
 };
 
-module.exports = { registerUser, loginUser, googleAuth, forgotPassword, resetPassword };
+// @desc    Get all registered users (admin only) — includes everyone, whether or not
+//          they've ever placed an order, so admins can see the full customer base.
+// @route   GET /api/auth/users
+// @access  Private (Admin only)
+const getAllUsers = async (req, res, next) => {
+  try {
+    const users = await User.find({}).select('name email role createdAt').sort({ createdAt: -1 });
+    return res.status(200).json({ success: true, count: users.length, data: users });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { registerUser, loginUser, googleAuth, forgotPassword, resetPassword, getAllUsers };

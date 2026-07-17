@@ -139,4 +139,19 @@ const updateOrder = async (req, res, next) => {
   }
 };
 
-module.exports = { createOrder, getMyOrders, getAllOrders, updateOrder };
+// @desc    Permanently delete an order
+// @route   DELETE /api/orders/:id
+// @access  Private (Admin only)
+const deleteOrder = async (req, res, next) => {
+  try {
+    const order = await Order.findByIdAndDelete(req.params.id);
+    if (!order) {
+      return res.status(404).json({ success: false, message: 'Target order record not found.' });
+    }
+    return res.status(200).json({ success: true, message: 'Order deleted successfully.' });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+module.exports = { createOrder, getMyOrders, getAllOrders, updateOrder, deleteOrder };
