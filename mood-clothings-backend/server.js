@@ -12,6 +12,12 @@ const { handleWebhook } = require('./controllers/paymentController');
 
 const app = express();
 
+// FIXED: without this, Express sees every visitor as coming from Render's shared
+// internal proxy IP instead of their real individual IP  which is exactly why one
+// device maxing out the rate limit was blocking everyone else too. This tells Express
+// to trust Render's proxy and read the real visitor IP from the X-Forwarded-For header.
+app.set('trust proxy', 1);
+
 connectDB();
 
 app.use(cors({
@@ -38,7 +44,8 @@ app.use(express.json());
 
 // RATE LIMITING: caps how many requests a single IP can make to sensitive auth
 // endpoints within a time window. Without this, someone could script thousands of
-// login attempts per minute trying to brute-force a password —
+// login attempts per minute trying to brute-force a password — this makes that
+// practically impossible instead of just "not currently happening."
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 10, // 10 requests per IP per window across register/login/google/forgot-password
@@ -51,7 +58,7 @@ const authLimiter = rateLimit({
 // on the whole site (especially for guessing an admin password).
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 5, // 5 login attempts per IP per 15 minutes
+  max: 6, // 6 login attempts per IP per 15 minutes
   standardHeaders: true,
   legacyHeaders: false,
   message: { success: false, message: 'Too many login attempts. Please try again in a few minutes.' },
