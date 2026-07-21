@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 const connectDB = require('./config/db');
 const productRoutes = require('./routes/productRoutes');
@@ -35,8 +36,30 @@ app.post(
 // Every other route can safely use normal JSON parsing
 app.use(express.json());
 
+// RATE LIMITING: caps how many requests a single IP can make to sensitive auth
+// endpoints within a time window. Without this, someone could script thousands of
+// login attempts per minute trying to brute-force a password —
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // 10 requests per IP per window across register/login/google/forgot-password
+  standardHeaders: true, // sends standard RateLimit-* headers
+  legacyHeaders: false,
+  message: { success: false, message: 'Too many attempts. Please try again in a few minutes.' },
+});
+
+// Login specifically gets a tighter limit — it's the single highest-value target
+// on the whole site (especially for guessing an admin password).
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5, // 5 login attempts per IP per 15 minutes
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Too many login attempts. Please try again in a few minutes.' },
+});
+
 app.use('/api/products', productRoutes);
-app.use('/api/auth', authRoutes);
+app.use('/api/auth/login', loginLimiter);
+app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/custom-designs', customDesignRoutes);
