@@ -4,7 +4,7 @@ const productSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true },
   description: { type: String, required: true },
   price: { type: Number, required: true, min: 0 },
-  category: { type: String, required: true, enum: ['men', 'women', 'kids'] },
+  category: { type: String, required: true, enum: ['men', 'women', 'kids', "unisex"] },
   sub: { type: String, required: true },
   images: [{ type: String, required: true }], // Holds Cloudinary image URLs
   colors: [{ type: String }], // Hex swatch values array
